@@ -30,13 +30,13 @@
 </template>
 
 <script>
-// import IPInfo from '../components/IPInfo.vue';
+import IPInfo from '../components/IPInfo.vue';
 // import leaflet from 'leaflet';
 // import { onMounted, ref } from 'vue';
 // import axios from 'axios';
 export default {
   name: 'Home',
-  // components: { IPInfo },
+  components: { IPInfo },
   // setup() {
   //   // create map variable
   //   let mymap;
