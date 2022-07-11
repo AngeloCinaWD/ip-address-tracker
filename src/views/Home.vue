@@ -32,8 +32,8 @@
 <script>
 import IPInfo from '../components/IPInfo.vue';
 import leaflet from 'leaflet';
-import { onMounted } from 'vue';
-// import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
 export default {
   name: 'Home',
   components: { IPInfo },
@@ -41,14 +41,14 @@ export default {
     // create map variable
     let mymap;
     // data
-    // const queryIp = ref('');
-    // const ipInfo = ref(null);
+    const queryIp = ref('');
+    const ipInfo = ref(null);
     // mounted lifecycle hook, creates the map
     onMounted(() => {
-      mymap = leaflet.map('mapid').setView([40.9674, 17.1154], 9);
+      mymap = leaflet.map('mapid').setView([40.9674, 17.1154], 11);
       leaflet
         .tileLayer(
-          'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZWxjb25kb3I3OSIsImEiOiJjbDVmbzlpenYxY3NnM2NvMjNyaWg3cDgwIn0.ruVdihDRwp3yDU290uvKrg',
+          'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
           {
             attribution:
               'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -60,30 +60,34 @@ export default {
               'pk.eyJ1IjoiZWxjb25kb3I3OSIsImEiOiJjbDVmbzlpenYxY3NnM2NvMjNyaWg3cDgwIn0.ruVdihDRwp3yDU290uvKrg',
           }
         )
+        // .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        //   maxZoom: 19,
+        //   attribution: '© OpenStreetMap',
+        // })
         .addTo(mymap);
     });
     // gets ip information from API
-    // const getIpInfo = async () => {
-    //   try {
-    //     const data = await axios.get(
-    //       `https://geo.ipify.org/api/v1?apiKey=at_FBTi0rGPhQlKp2cRdOJV0t3Mibq6F&ipAddress=${queryIp.value}`
-    //     );
-    //     const result = data.data;
-    //     ipInfo.value = {
-    //       address: result.ip,
-    //       state: result.location.region,
-    //       timezone: result.location.timezone,
-    //       isp: result.isp,
-    //       lat: result.location.lat,
-    //       lng: result.location.lng,
-    //     };
-    //     leaflet.marker([ipInfo.value.lat, ipInfo.value.lng]).addTo(mymap);
-    //     mymap.setView([ipInfo.value.lat, ipInfo.value.lng], 13);
-    //   } catch (err) {
-    //     alert(err.message);
-    //   }
-    // };
-    // return { queryIp, ipInfo, getIpInfo };
+    const getIpInfo = async () => {
+      try {
+        const data = await axios.get(
+          `https://geo.ipify.org/api/v1?apiKey=at_zAz9Yba88gQjrp2Y2GdMz5eaPOcfB&ipAddress=${queryIp.value}`
+        );
+        const result = data.data;
+        ipInfo.value = {
+          address: result.ip,
+          state: result.location.region,
+          timezone: result.location.timezone,
+          isp: result.isp,
+          lat: result.location.lat,
+          lng: result.location.lng,
+        };
+        leaflet.marker([ipInfo.value.lat, ipInfo.value.lng]).addTo(mymap);
+        mymap.setView([ipInfo.value.lat, ipInfo.value.lng], 13);
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+    return { queryIp, ipInfo, getIpInfo };
   },
 };
 </script>
